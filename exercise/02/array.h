@@ -4,4 +4,9 @@ class array
 	double* p;
 	int n;
 public:
+	array();
+	array(int size, double value);
+
+	int size();
+	double at(int index) const;
 };
