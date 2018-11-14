@@ -1,23 +1,17 @@
 #include "stdafx.h"
 #include "color.h"
+#include <algorithm>
 #include <windows.h> // RGB
 
-
-color::color() : color(0, 0, 0) { }
 
 color::color(double red, double green, double blue) :
 	red(get_valid_number(red)),
 	green(get_valid_number(green)),
 	blue(get_valid_number(blue)) { }
 
-color::color(const color& other) :
-	color(other.red, other.green, other.blue) { }
-
 double color::get_valid_number(double value) const
 {
-	if (value < low_value) return low_value;
-	if (value > high_scaled_value) return high_scaled_value;
-	return value;
+	return std::clamp(value, 0., 1.);
 }
 
 double color::get_red() const
@@ -50,13 +44,17 @@ void color::set_blue(double blue)
 	this->blue = get_valid_number(blue);
 }
 
-
 unsigned long color::get_color_ref() const
 {
-	return RGB(red * high_rgb_value, green * high_rgb_value, blue * high_rgb_value);
+	return RGB(red * 255, green * 255, blue * 255);
 }
 
 double color::get_luminance() const
 {
-	return (rY * red + gY * green + bY * blue);
+	return (0.2126 * red + 0.7152 * green + 0.0722 * blue);
+}
+
+bool operator==(const color& c1, const color& c2)
+{
+	return c1.get_color_ref() == c2.get_color_ref();
 }
